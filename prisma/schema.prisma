@@ -4,10 +4,179 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider   = "prisma-client-js"
+  engineType = "library"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
+
+model Usuario {
+  id    Int    @id @default(autoincrement())
+  nome  String
+  email String @unique
+  senha String
+
+  @@map("usuarios")
+}
+
+model Categoria {
+  id       Int       @id @default(autoincrement())
+  nome     String    @unique
+  produtos Produto[]
+
+  @@map("cat_produtos")
+}
+
+model Cliente {
+  id       Int     @id @default(autoincrement())
+  nome     String
+  telefone String?
+  email    String?
+  endereco String?
+  ativo    String  @default("Sim")
+  pessoa   String?
+  doc      String? @unique
+  obs      String?
+  data     String?
+  conta    String?
+  agencia  String?
+  banco    String?
+
+  @@map("clientes")
+}
+
+model Produto {
+  id           Int       @id @default(autoincrement())
+  codigo       String    @unique
+  nome         String    @unique
+  descricao    String?
+  valor_compra Float     @default(0)
+  valor_venda  Float     @default(0)
+  categoria_id Int       @map("categoria")
+  categoria    Categoria @relation(fields: [categoria_id], references: [id])
+  ativo        String    @default("Sim")
+  foto         String    @default("sem-foto.jpg")
+  estoque      Int       @default(0)
+  lucro        Float     @default(0)
+  fornecedor   String?
+
+  @@map("produtos")
+}
+
+model ContaPagar {
+  id            Int     @id @default(autoincrement())
+  descricao     String?
+  cliente       String?
+  saida         String  @default("Sim")
+  documento     String?
+  plano_conta   String?
+  data_emissao  String?
+  vencimento    String?
+  frequencia    String  @default("Mensal")
+  valor         Float   @default(0)
+  usuario_lanc  String?
+  usuario_baixa String?
+  status        String  @default("Pendente")
+  data_recor    String?
+  arquivo       String  @default("sem-foto.jpg")
+  juros         Float?  @default(0)
+  multa         Float?  @default(0)
+  desconto      Float?  @default(0)
+  subtotal      Float?  @default(0)
+  data_baixa    String?
+  id_compra     Int?
+
+  @@map("contas_pagar")
+}
+
+model ContaReceber {
+  id         Int     @id @default(autoincrement())
+  vencimento String?
+  status     String  @default("Pendente")
+
+  @@map("contas_receber")
+}
+
+model Fornecedor {
+  id   Int    @id @default(autoincrement())
+  nome String @unique
+
+  @@map("fornecedores")
+}
+
+model CatDespesa {
+  id       Int       @id @default(autoincrement())
+  nome     String    @unique
+  despesas Despesa[]
+
+  @@map("cat_despesas")
+}
+
+model Despesa {
+  id             Int        @id @default(autoincrement())
+  nome           String
+  cat_despesa_id Int        @map("cat_despesa")
+  cat_despesa    CatDespesa @relation(fields: [cat_despesa_id], references: [id])
+
+  @@map("despesas")
+}
+
+model Frequencia {
+  id   Int    @id @default(autoincrement())
+  nome String @unique
+  dias Int
+
+  @@map("frequencias")
+}
+
+model ValorParcial {
+  id       Int     @id @default(autoincrement())
+  id_conta Int
+  tipo     String  @default("Pagar")
+  valor    Float
+  data     String?
+  usuario  String?
+
+  @@map("valor_parcial")
+}
+
+model Movimentacao {
+  id            Int     @id @default(autoincrement())
+  tipo          String
+  movimento     String
+  descricao     String?
+  valor         Float
+  usuario       String?
+  data          String?
+  lancamento    String?
+  plano_conta   String?
+  documento     String?
+  caixa_periodo Int?
+  id_mov        Int?
+
+  @@map("movimentacoes")
+}
+
+model Caixa {
+  id     Int    @id @default(autoincrement())
+  status String @default("Fechado")
+
+  @@map("caixa")
+}
+
+model Compra {
+  id     Int    @id @default(autoincrement())
+  status String @default("Pendente")
+
+  @@map("compras")
+}
+
+model Banco {
+  id   Int    @id @default(autoincrement())
+  nome String @unique
+
+  @@map("bancos")
+}
+
