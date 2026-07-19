@@ -1,0 +1,6 @@
+{
+  "name": "API Finance",
+  "description": "API Financeira para controle de clientes, produtos, contas a pagar e receber",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
